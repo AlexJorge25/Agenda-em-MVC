@@ -1,0 +1,10 @@
+﻿@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Aviso: Tem certeza que deseja deletar?</h1>
+<form method="post">
+    <input type="hidden" name="email" value="@ViewData["Email"]" />
+    <input type="submit" asp-action="VoltarDeletar1" value="Sim"/>
+	<input type="submit" asp-action="Index" value="Não">
+</form>
