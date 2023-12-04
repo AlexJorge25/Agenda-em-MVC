@@ -1,21 +1,22 @@
-﻿using AgendaMVC.Models;
+﻿using AgendaMVC.Crud;
+using AgendaMVC.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AgendaMVC.Controllers
 {
-	public class ContatoController : Controller
-	{
-		static List<Models.Contato> contatos = new() {new Contato()
-            {
-                Id = 1,
-                Nome = "Maria",
-                Email = "Maria@gmail.com",
-                Telefone = "(47) 99278-2893"
-            } };
+    public class ContatoController : Controller
+    {
+        private readonly CrudContato _crudContato;
+
+        public ContatoController()
+        {
+            _crudContato = new CrudContato();
+        }
 
         public IActionResult Index()
         {
-            return View(Dados.Db.contatos);
+            List<Contato> contatos = _crudContato.Consultar();
+            return View(contatos);
         }
         [HttpGet]
         public IActionResult Create()
@@ -27,7 +28,8 @@ namespace AgendaMVC.Controllers
         public IActionResult Create(Models.Contato contato)
         {
             contato.Id = Dados.Db.contatos.Count + 1;
-            Dados.Db.contatos.Add(contato);
+            /*Dados.Db.contatos.Add(contato);*/
+            new Crud.CrudContato().salvar(contato);
             return RedirectToAction("Index");
         }
 
@@ -55,16 +57,16 @@ namespace AgendaMVC.Controllers
             return View(contato);
         }
         [HttpGet]
-        public IActionResult Deletar1(string email)
+        public IActionResult Deletar1(int id)
         {
-            ViewData["Email"] = email;
+            ViewData["Id"] = id;
             return View();
         }
 
         [HttpPost]
-        public IActionResult VoltarDeletar1(string email)
+        public IActionResult VoltarDeletar1(int id)
         {
-            Dados.Db.contatos.RemoveAll(ct => ct.Email == email);
+            new Crud.CrudContato().Deletar(id);
             return RedirectToAction("Index");
         }
 
